@@ -1,10 +1,24 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FaCar, FaMapMarkedAlt, FaUserGraduate } from "react-icons/fa";
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
 
 const Home = () => {
   return (
     <div className="text-center">
+      {/* Header with Clerk Authentication */}
+      <header className="flex justify-between items-center p-4 bg-white shadow-md">
+        <h1 className="text-2xl font-bold text-gray-900">DriveX</h1>
+        <div>
+          <SignedOut>
+            <SignInButton className="btn-primary" />
+          </SignedOut>
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
+        </div>
+      </header>
+
       {/* Hero Section */}
       <motion.section
         className="h-screen flex flex-col items-center justify-center bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-gray-100 px-4"
@@ -19,10 +33,7 @@ const Home = () => {
           Join expert instructors and driving schools to gain real-world driving skills with real-time tracking and personalized lessons.
         </p>
 
-        <div className="space-x-4">
-          <Link to="/register" className="btn-primary">Get Started</Link>
-          <Link to="/login" className="btn-secondary">Login</Link>
-        </div>
+       
       </motion.section>
 
       {/* Onboarding Steps Section */}
