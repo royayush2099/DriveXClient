@@ -1,0 +1,121 @@
+You can achieve this with **Clerk authentication** while adding a **custom dropdown** for role selection before redirecting users to the signup or login page. Here's how you can do it:
+
+---
+
+### **Steps to Implement Custom Clerk Authentication with Role Selection:**
+#### **1. Install Clerk SDK**
+If you haven’t already, install Clerk in your Next.js/Vite + React project:
+```sh
+npm install @clerk/clerk-react
+```
+or
+```sh
+yarn add @clerk/clerk-react
+```
+
+#### **2. Setup Clerk Provider in `main.jsx` (for Vite)**
+Wrap your app with **ClerkProvider** inside `main.jsx` or `main.tsx`:
+```jsx
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { ClerkProvider } from "@clerk/clerk-react";
+import App from "./App";
+
+const PUBLISHABLE_KEY = "your-clerk-publishable-key";
+
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
+    <App />
+  </ClerkProvider>
+);
+```
+
+#### **3. Create a Role Selection Component (`RoleDropdown.jsx`)**
+```jsx
+import { useState } from "react";
+import { SignUpButton, SignInButton } from "@clerk/clerk-react";
+
+const RoleDropdown = () => {
+  const [role, setRole] = useState("");
+
+  const handleSelect = (selectedRole) => {
+    setRole(selectedRole);
+  };
+
+  return (
+    <div className="relative">
+      <button className="bg-blue-600 text-white px-4 py-2 rounded-md">
+        Select Role
+      </button>
+      <div className="absolute bg-white border mt-2 rounded-md shadow-lg">
+        <button onClick={() => handleSelect("student")} className="block px-4 py-2 hover:bg-gray-200">
+          Student
+        </button>
+        <button onClick={() => handleSelect("solo-instructor")} className="block px-4 py-2 hover:bg-gray-200">
+          Solo Instructor
+        </button>
+        <button onClick={() => handleSelect("driving-school")} className="block px-4 py-2 hover:bg-gray-200">
+          Driving School
+        </button>
+      </div>
+      {role && (
+        <div className="mt-2">
+          <SignUpButton mode="modal" afterSignInUrl={`/dashboard/${role}`} />
+          <SignInButton mode="modal" afterSignInUrl={`/dashboard/${role}`} />
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default RoleDropdown;
+```
+---
+#### **4. Use Role Dropdown in Your Navbar or Landing Page**
+```jsx
+import RoleDropdown from "./RoleDropdown";
+
+const Navbar = () => {
+  return (
+    <nav className="flex justify-between p-4 bg-gray-900 text-white">
+      <h1 className="text-lg">DriveX</h1>
+      <RoleDropdown />
+    </nav>
+  );
+};
+
+export default Navbar;
+```
+
+---
+
+### **How It Works**
+1. The **RoleDropdown** component shows a button to select a role (Student, Solo Instructor, Driving School).
+2. When a role is selected, the **SignUpButton** and **SignInButton** appear with a dynamic redirect URL (e.g., `/dashboard/student`).
+3. After signup or login, Clerk redirects users to `/dashboard/{role}`.
+
+---
+
+### **Optional: Store Role in Clerk User Metadata**
+Modify the `handleSelect` function to pass the role as user metadata:
+```jsx
+import { useUser, useClerk } from "@clerk/clerk-react";
+
+const { user } = useUser();
+const { updateUser } = useClerk();
+
+const handleSelect = async (selectedRole) => {
+  setRole(selectedRole);
+  await updateUser({ publicMetadata: { role: selectedRole } });
+};
+```
+This will store the role in **Clerk's user metadata**, which can be accessed anywhere in your app.
+
+---
+
+This approach ensures:
+✅ **Custom Role Selection** before authentication  
+✅ **Seamless Integration with Clerk**  
+✅ **Role-Based Redirection** after signup/login  
+
+Let me know if you need modifications! 🚀

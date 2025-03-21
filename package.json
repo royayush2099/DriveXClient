@@ -12,6 +12,8 @@
   "dependencies": {
     "@clerk/clerk-react": "^5.23.0",
     "@tailwindcss/vite": "^4.0.7",
+    "appwrite": "^17.0.0",
+    "firebase": "^11.4.0",
     "framer-motion": "^12.4.7",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
